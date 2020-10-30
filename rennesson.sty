@@ -1,0 +1,206 @@
+% utf8 with BOM
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%PREAMBULE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%PACKAGES PARTICULIERS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%pour les lettres
+\usepackage[utf8]{inputenc} % codage du fichier source en UTF8, permet de taper directement au clavier les accents et cédilles dans le fichier source
+%ATTENTION quand on travail dans un projet se mettre tous sous la même forme,UTF8  (ou  latin1)
+%\usepackage[latin1]{inputenc} % codage du fichier source en latin1, permet de taper directement au clavier les accents et cédilles dans le fichier source A METTRE SEULEMENT SI JE DOIS SAUTER PAR LA FENETRE.
+\usepackage[T1]{fontenc}% codage des fontes TeX, permet une bonne césure des mots de langues latines et un copier-coller depuis le pdf
+\usepackage{lmodern}%permet d’adapter la police de base de LATEX aux nouveaux formats apparus, le pdf notament (ce package charge la police Latin Modern)
+
+
+%pour la nomenclature d'impression, ie les limites de la feuille, des marges, en-tête et pied de page
+\usepackage[a4paper]{geometry}%permet de spécifier la dimension des pages du document, un contrôle fin et complet des marges du document (essayer [a4paper, body={16cm,24cm}])
+
+
+%pour les maths
+\usepackage{amsmath, amssymb, amsfonts}%extensions de l’American Mathematical Society for insane formules
+\usepackage{amsthm}%mep de l'asm pour les thm, pro, def et autres, mais limite les capacités de LaTex
+\usepackage{mathrsfs}%Cursives majuscules
+
+
+%pour la compilation
+%\usepackage{epstopdf}%pour autoriser, lors d’une compilation PDFLATEX avec des images en eps, la création automatique de version pdf de ces images (afin de compiler sans râler)
+
+
+%pour le français, ie écrire directement les accents par le clavier et non à l'ancienne comme \'e
+\usepackage[french]{babel}% document en français, respecte la typographie française, MEP, typographie
+\frenchbsetup{StandardLists=true}% à inclure si on utilise \usepackage[french]{babel}%tjs mettre \usepackage{enumitem} % la personnalisation des listes se base APRES
+\usepackage{enumitem} % la personnalisation des listes se bases
+%pour toutes les langues latines
+%\usepackage{babel}% document en français, respecte la typographie latine, MEP, typographie
+
+
+\usepackage[usenames]{color}
+\usepackage{graphicx, xcolor}%pour l’insertion des graphiques et l’usage des couleurs
+
+
+
+
+% COMMANDES SUR L AMS, MEP
+% personnalisation (redef) de la MEP de la macro definition \thm, 
+% \newtheoremstyle{plain}%
+%   {\topsep}% espace avant
+%   {\topsep}% espace après
+%   {\itshape}% police du corps du théorème
+%   {}% indentation (vide pour rien, \parindent) {\bfseries}% police du titre du théorème
+%   {.}% ponctuation après le théorème
+%   {\newline}% après le titre du théorème (espace ou \newline)
+%   {}% spécifications du titre , %La valeur par défaut du dernier argument est \thmname{#1}\thmnumber{ \textup{#2}}\thmnote{ \textnormal{(#3)}}, où #1 est le titre, #2 le numéro et #3 l’argument op- tionnel du théorème.
+% personnalisation (redef) de la MEP de la macro definition \defi, AFIN QUE TEXTE SOIT EN-DESSOUS PAS APRES
+\newtheoremstyle{definition}%
+  {\topsep}% espace avant
+  {\topsep}% espace après
+  {\upshape}% police du corps de la définition
+  {}% indentation (vide pour rien, \parindent)
+  {\bfseries}% police du titre de la définition
+  {.}% ponctuation après la définition
+  {\newline}% après le titre de la définition (espace ou \newline) %nouveauté ajouté, LE SAUT DE LIGNE !
+  {}% spécifications du titre , %La valeur par défaut du dernier argument est \thmname{#1}\thmnumber{ \textup{#2}}\thmnote{ \textnormal{(#3)}}, où #1 est le titre, #2 le numéro et #3 l’argument op- tionnel du théorème.
+  % personnalisation (redef) de la MEP de la macro definition \thm, 
+\newtheoremstyle{Théorème}%
+  {\topsep}% espace avant
+  {\topsep}% espace après
+  {\upshape}% police du corps du théorème
+  {}% indentation (vide pour rien, \parindent)
+  {\bfseries}% police du titre du théorème
+  {.}% ponctuation après le théorème
+  {\newline}% après le titre du théorème (espace ou \newline) %nouveauté ajouté, LE SAUT DE LIGNE !
+  {}% spécifications du titre , %La valeur par défaut du dernier argument est \thmname{#1}\thmnumber{ \textup{#2}}\thmnote{ \textnormal{(#3)}}, où #1 est le titre, #2 le numéro et #3 l’argument op- tionnel du théorème.
+   % personnalisation (redef) de la MEP de la macro definition \rmq, 
+\newtheoremstyle{Remarque}%
+  {\topsep}% espace avant
+  {\topsep}% espace après
+  {\upshape}% police du corps de la remarque
+  {}% indentation (vide pour rien, \parindent)
+  {\bfseries}% police du titre de la remarque
+  {:}% ponctuation après la remarque
+  {\newline}% après le titre de la remarque (espace ou \newline) %nouveauté ajouté, LE SAUT DE LIGNE !
+  {}% spécifications du titre , %La valeur par défaut du dernier argument est \thmname{#1}\thmnumber{ \textup{#2}}\thmnote{ \textnormal{(#3)}}, où #1 est le titre, #2 le numéro et #3 l’argument optionnel du théorème.
+\newtheorem{prop}{Proposition} 
+\newtheorem{cor}[prop]{Corollaire}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Théorème}
+
+\theoremstyle{definition}
+\newtheorem{defi}[thm]{Définition}
+
+\theoremstyle{remark}
+\newtheorem{exe}{Exemple}
+\newtheorem*{rmq}{Remarque}
+
+
+
+
+% commandes personnelles
+\everymath{\displaystyle}%force le mode équation pour les équations
+
+\newcommand{\dis}{\displaystyle}
+
+
+%ecriture des ensembles
+\newcommand{\N}{\mathbb{N}}%entiers naturels
+\newcommand{\Z}{\mathbb{Z}}%entiers relatifs
+\newcommand{\Q}{\mathbb{Q}}%entiers rationnels
+\newcommand{\D}{\mathbb{D}}%décimaux
+\newcommand{\R}{\mathbb{R}}%réels
+\newcommand{\C}{\mathbb{C}}%complexes
+\newcommand{\K}{\mathbb{K}}%R ou C
+
+
+\newcommand{\Qed}{  \mathbb{Q}\!  \emph{e}  \partial }%symbole de fin de démonstration
+
+
+%couleurs
+%\definecolor{red}{rgb}{1,0,0}
+\definecolor{green}{rgb}{0,1,0}
+\definecolor{blue}{rgb}{0,0,1}
+\definecolor{violet}{rgb}{.5,.5,.5}
+\definecolor{white}{rgb}{1,1,1}
+\definecolor{red}{HTML}{CC0000}
+%\definecolor{pink}{HTML}{eebefa}%pour connaître la structure du code couleur ASCII
+%\definecolor{orange}{HTML}{FF8C00}
+%\definecolor{bleu ciel}{HTML}{DFF2FF}
+%\definecolor{red}{HTML}{}
+%{\color{red} blabla} est accepté par MATHJAX.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%BLOC POUR BLACK PDF
+\definecolor{noir_gris}{HTML}{343a40}%couleur de fond du pdf
+\definecolor{pink}{HTML}{eebefa}%pour connaître la structure du code couleur ASCII
+\definecolor{orange}{HTML}{FF8C00}%couleur titre du pdf
+\definecolor{vert_olive}{HTML}{B0F2B6}%vert pale, couleur text principal
+\definecolor{bleu_lavande}{HTML}{E6E6FA}%bleu lavande, %couleur du text par défaut
+%%%%%%%%%%%%%%%%%%%%%%%%END END END BLOC POUR BLACK PDF
+
+
+
+
+%liste de macro récurrentes mathématiques
+\newcommand{\polyd}[1]{ $ a_{0} + a_{1} x + \cdots + a_{#1} x^{#1}  $}
+%\newcommand{\polydc}[2]{ $ #1#2, #2_{0} + #2_{1} x + \cdots + #2_{#1} x^{#1}  $}
+\newcommand{\polydc}[2]{ $ #1#2, #2_{0} + #2_{1} x + \cdots + #2_{#1} x^{#1}  $}
+
+
+%BROUILLON
+%degré, intervalle :arrivée, départ, fonction
+%\newcommand{\better}[2]{A #1 is better than a #2.}
+%\newcommand{\polyd}[1]{ a_{0} + a_{1} x + \ldot + a_{#1} x^{#1} }
+%\newcommand{\polydc}[2]{#1#2, #2_{0} + #2_{1} x + \ldot + #2_{#1} x^{#1} }
+%\newcommand{}[4]{}
+
+
+%expliaction légende
+%d pour degré, i pour intervalle : arrivé, départ, f pour fonction, 
+
+%degré, intervalle : arrivée, départ, fonction
+\newcommand{\taylordif}[4]{  \[ #4(#3) = \sum_{k = 0}^{#1} \frac{ \left( #3 - #2 \right)^{k} }{k!} #4^{\left( k \right)} (#2) \] }
+
+%rest_taylorRI_dif : n, a, b, f 
+%\int^{b}_{a} \frac{(b-a)}{n!} f^{(n+1)}(t)
+%\newcommand{\restTaylorRIdif}[4]{ \int^{b}_{a} \frac{(b - a)}{n!} f^{(n+1)}(t) }
+\newcommand{\restTaylorRIdif}[4]{ \int^{#3}_{#2} \frac{(#3 - #2)}{#1 !} #4^{(#1 + 1)}(t) }
+
+%rest_taylorRI_dif : n, a, b, f 
+%\frac{(b - a)^{n + 1}}{(n + 1) !} f^{(n + 1)} (c)
+%\newcommand{\restTaylorLAdif}[4]{ \frac{(b - a)^{n + 1}}{(n + 1) !} f^{(n + 1)} (c) }
+\newcommand{\restTaylorLAdif}[4]{ \frac{(#3 - #2)^{#1 + 1} }{ (#1 +1) !} #4^{(#1 + 1)} (c) }
+
+%rest_taylorY_dpv : n, a, x
+%(x - a)^{n} \varepsilon (x) \text{ où } \lim_{x \longrightarrow a} \varepsilon (x) = 0
+%\newcommand{\restTaylorYdpv}[4]{ (x - a)^{n} \varepsilon (x) \text{ où } \lim_{x \longrightarrow a} \varepsilon (x) = 0 }
+\newcommand{\restTaylorYdpv}[3]{ (#3 - #2)^{#1} \varepsilon (#3) \text{ où } \lim_{#3 \longrightarrow #2} \varepsilon (#3) = 0 }
+
+%tx_acc_if : a, b, f
+%\frac{f(b) - f(a)}{b - a}
+%\newcommand{\txAccif}[3]{ \frac{ f(b) - f(a) }{b - a} }
+\newcommand{\txAccif}[3]{ \frac{ #3 (#2) - #3 (#1) }{ #2 - #1 } }
+
+
+
+
+
+
+%${\dis{ X_n \underset{n \rightarrow +\infty}{\overset{CVS}{\longrightarrow}} X}}$ triple supperposition symboles
+%\DeclareMathOperator{}{}%Pour créer un opérateur mathématique quand il n'est pas dans fct maths
+%\textcolor{red}{\emph{\textbf{ ssi } }}
+
+
+
+
+\author{Rennesson}
+\title{}
+
+
+%{\color{orange} }

@@ -1,0 +1,906 @@
+﻿% utf8
+
+% teste pour fichier avec packages importés, mise en fomre comme exo7, ceci est un essai.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%CLASSE DU DOCUMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt,a4paper]{article}
+
+
+\usepackage{rennesson} %va chercher le fichier rennesson.sty
+
+
+\begin{document}
+%\pagecolor{couleur}%définir la couleur de fond de toute la page
+\pagecolor{noir_gris}
+{\color{vert_olive}
+
+%titre, auteur et date en orange
+{\color{orange}
+\title{JOURNAL}%%replace X with the appropriate number
+\author{BOUSTEÏLA Sarah 216248, RENNESSON Bastien 57119}%%replace with your name %%if necessary, replace with your course title
+\maketitle
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Lecture du sujet et construction du schéma EA.}
+\subsection{Les concerts}
+2020_10_08 1400 BU ETAGE 2, 
+
+première contrainte du sujet :"Un organisme gère l'organisation d'un festival de musique classique dans une région de la France sur une période de 3 semaines."
+Donc 
+type de musique = musique classique
+lieu terreste = une région de la France (regarder si dep outre-mer et région outre-mer comptent)
+durée = 3 semaines (mettre verif dans date des évènements)
+
+
+Info complémentaire pour BDD à 1ère lecture
+De chaque interprète, on connaît nom, prénom, téléphone, email, date de naissance, nationalité et résumé de sa biographie. ==> NOT NULL pour table interprete
+
+
+
+
+
+
+
+Rappel de Cho (changer par Monsieur Chochoix pour toute la suite à la fin au propre)
+Éviter dans association être et avoir.
+Recherche de tous les synonimes de être et avoir
+
+https://www.synonymes.com/synonyme.php?mot=avoir
+avoir : 
+appartenance, posséder, disposer de, bénéficier de, être propriétaire de, jouir de, détenir, commerce, acquérir, acheter, se procurer, fait, obtenir, gagner, recevoir, remporter, toucher, état, vêtement, porter, émotion, éprouver, sentir, ressentir, relation, tromper, rouler, attraper, disposer, garder, renfermer, tenir
+
+https://www.synonymes.com/synonyme.php?mot=%EAtre
+être : 
+exister, subsister, vivre, réaliser, avoir lieu, se faire, avoir été, se montrer, se présenter, se trouver, se voir, aller, représenter, appartenir, accomplir, résider, tenir, trouver
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Essaye de trouver les entités et associations, relecture multiples et aide pour le schéma EA sur mocodo
+
+
+
+#CARDINALITÉ
+Analyse syntaxique du français, i.e sur les possibilités des cardinalités
+0-1     aucune ou une seule
+1-1     une et une seule
+0-N     aucune ou plusieurs
+1-N     une ou plusieurs
+
+
+4@ À partir des phrases du sujet
+"Les concerts ont parfois un thème" ==> thématique, 01 concert, 1N thème
+d'ou 01 concert,
+1N thème, car organisme ne garde que les thèmes utilisés sur les 3 semaines
+
+
+@"La plupart des concerts ont un entracte et on sait alors quand il se situe."
+==> bénéficier de, 01 concert, 11 entracte
+01 concert car certain concert n'ont pas d'entracte
+11 entracte car entracte id = 4 est uniquement utilisée pour le concert id = 7
+
+
+"A chaque concert sont programmés, dans un ordre précis; plusieurs morceaux. "
+==> programme, 1N morceau, 1N concert: ordre (position)
+1N morceau car il y a entre 1 et N morceaux dans un concert
+1N concert car 1 morceau peut être joué dans plusieurs concerts, 1 card min car organisme sait exactement
+tous les morceaux qui seront joués en concert. Il n'y a aucun intérêt à avoir les morceaux non joués.
+RMQ ordre doit être unique, mais on ne sait pas (juste section Les concerts) si un morceu est joué plusieurs fois dans un concert (pour les contraintes)
+
+
+
+2@ "Chaque morceau peut avoir plusieurs interprètes."
+==> interpréter, 1N morceau, XX interprète
+1N morceau card mini 1 pour soliste, N pour orchestre
+Au premier abord on mettrait 1N interprète sauf que
+"Seuls les principaux interprètes sont mentionnés (et non pas tous les musiciens)."
+Ainsi on ne veut garder que les plus importants, ce qui donne
+01 interprète, card mini 0 signifie que l'interprète n'est pas interprète principal, 1 il l'est
+D'où ==> interpréter, 1N morceau, 01 interprète
+
+2@ modif le 2020_10_10 PAR 
+2@ "Chaque morceau peut avoir plusieurs interprètes."
+==> interpréteur principal, 1N morceau, XX interprète
+"Seuls les principaux interprètes sont mentionnés (et non pas tous les musiciens)."
+Ainsi on ne veut garder que les plus importants, ce qui donne
+0N interprète card mini 0 pour interprètes qui ne sont pas interpréteurs principaux, 
+N pour interprète qui est interprète principal sur plusieurs morceaux
+1N morceau card mini 1 car un morceau à besoin d'un interprète au minimum, m^me le silence est interprété en musique, crad maxi N car "Chaque morceau peut avoir plusieurs interprètes."
+D'où ==> interpréteur principal, 1N morceau, 0N interprète
+
+
+
+3@ "Il arrive que le même morceau soit joué dans le même concert par des interprètes différents."
+JE NE SAIS PAS COMMENT L'INTERPRÉTER POUR L'INSTANT, PE DEMANDE UNE NOUVELLE RELATION
+EN ATTENTE
+
+
+
+"A chaque concert correspond une affiche"
+==> correspond, 11 concert, 1N affiche
+11 concert, on est sur une région de France, ainsi une même affiche pour toute la FRANCE, ce qui serait différent si on travaillait sur le monde entier. Merci Cho
+1N affiche, car les dates y sont imprimées dessus, concert 1 jour ou sur 3 semaines de représentations
+
+
+"Certains concerts disposent de plus d'une bande sonore promotionnelle sous forme de fichier."
+==> disposer, 01 concert, 11 bande_promo
+01 concert, car "Certains concerts disposent", d'où card mini 0, card maxi 1 car une seule bande promo pour le concert, qui est différent du cinéma qui montre jusqu'à 3 bandes annonces différentes.
+11 bande_promo, card mini 1 une bande promo qui n'a pas de concert est un non sens, card maxi lui est beaucoup plus ambigüe, 
+	-cas 1: une unique répresentation; donne 1
+	-cas 2: des représentations sur 3 semaines; donne n
+Sauf que dans sujet "Les concerts se déroulent, à diverses dates et heures, dans différentes salles de spectacle." Ainsi comme pour https://www.sortiraparis.com/scenes/concert-musique/articles/209494-saint-seiya-symphonic-adventure-les-chevaliers-du-zodiaque-en-concert-symphoniqu
+nous sommes dans le cas 2. D'où 
+==> disposer, 01 concert, 1n bande_promo
+
+
+
+" Sa spécialité principale est mentionnée (violon, harpe...) ainsi que, parfois, ses spécialités secondaires."
+==> secondaire, 0N interprète, 0N spécialité
+0N interprète, card min 0 car "parfois" possible qu'interprète n'ai pas de spécialité secondaire,
+card maxi N car plusieurs
+0N spécialité, card 0 min car toutes les spécialités secondaires ne sont pas présentes, certaines ne sont que dess principales (table contient toutes spé, certaines ne sont que des ppal, donc pas prises pour secondaires), 
+card N maxi car "ses spécialités secondaires".
+
+
+
+
+dernier plan en cours
+#######################MOCODO_MOCODO_MOCODO_MOCODO_MOCODO###################################
+secondaire, 0N interprète, 0N spécialité
+spécialité: id_spécialité, nom (ex: violon, harpe)
+theme: id_theme, nom, XXX
+entracte: id_entracte, nom, situe (=position en temps ou après X morceaux), XXX
+
+interprète: id_interprète, nom, prénom, tel, email, naiss, nationalité, résumé_bio,
+principale, 11 interprète, 0N spécialité
+thématique, 01 concert, 1N theme
+bénéficier de, 01 concert, 11 entracte
+
+interpréteur principal, 1N morceau, 0N interprète
+programme, 1N morceau, 1N concert: ordre (position)
+concert: id_concert, nom, date, heure, salle_de_spectacle, XXX
+enregistrer, 01 concert, 11 disque
+
+morceau: id_morceau, auteur, titre, durée
+affiche: id_affiche, img_XL_impression, img_com_web, colorimétrie, profondeur_couleur
+correspond, 11 concert, 1N affiche
+disque: id_disque, nom, prix_disque
+
+:
+:
+bande_promo: id_bande_promo, taille (en ko), format (ex: MIME), mots clés, durée 
+disposer, 01 concert, 1n bande_promo
+
+#############################################################################################
+
+
+
+
+
+
+
+Liste des questions à posser à Cho
+1 sur @ : "La plupart des concerts ont un entracte et on sait alors quand il se situe."
+Remarque d' Alexis sur discord
+perso j'aurais mis 0,n pour la cardinalité des entractes (à la palace de 0,1). car même si dans le sujet il disent que les concert peuvent avoir un entracte, en vrai si c'est un opera il peut y a voir plusieurs entracte (mais ça c'est chipoter, et puis si c'est dans le sujet ils font ce qu'ils veulent)
+
+Q : Dans vos opéras, il y a bien une seule entracte ?
+SI oui, rien ne change
+Sinon, ==>  bénéficier de, 0N concert, 11 entracte
+
+
+
+2 sur 2@ : "Chaque morceau peut avoir plusieurs interprètes."
+==> interpréter, 1N morceau, XX interprète
+1N morceau card mini 1 pour soliste, N pour orchestre
+Au premier abord on mettrait 1N interprète sauf que
+"Seuls les principaux interprètes sont mentionnés (et non pas tous les musiciens)."
+Ainsi on ne veut garder que les plus importants, ce qui donne
+01 interprète, card mini 0 signifie que l'interprète n'est pas interprète principal, 1 il l'est
+D'où ==> interpréter, 1N morceau, 01 interprète
+
+Q: Mon interprétation de la phrase et des cardinalité est-elle correcte ?
+SI oui, rien ne change
+Sinon, faire les modifications selon la réponse de Cho
+
+
+
+3 sur 3@ : "Il arrive que le même morceau soit joué dans le même concert par des interprètes différents."
+JE NE SAIS PAS COMMENT L'INTERPRÉTER POUR L'INSTANT, PE DEMANDE UNE NOUVELLE RELATION
+EN ATTENTE
+
+Q: Vous voulez dire que l'interprétation de la marche de l'empereur de Stars war joué en premier
+dans le concert par l'interprète Philippe Cho, puis par Sarah BOUSTEÏLA ?s
+
+FAIRE LES MODIFICATIONS SELON LA RÉPONSE DE CHO
+
+
+4 sur 4@ : "Les concerts ont parfois un thème"
+Q les organisateurs du festival de musique connaissent-ils à l'avance tous les thèmes des concerts.
+Si oui, ne gardent-ils que les thèmes utilisés ?
+Si non, mettre cardinalité de 0N pour 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Les salles et leur personnel}
+2020_10_09 0800 SALLE 2B100
+
+
+dernier plan en cours
+#######################MOCODO_MOCODO_MOCODO_MOCODO_MOCODO###################################
+
+salle: nom(varchar(42)), adr, directeur (=id_personne), chargé de communication (=id_personne), régisseur en chef(=id_personne)
+référencé, 11 salle, 1N lieu
+:
+
+travailleur, 0N personne, 1N salle
+lieu: id_lieu, nom, adr, localité, dep, soustype (NULL),
+se dérouler, 1N concert, 1N lieu
+
+personne: id_personne, nom, prénom, téléphone, email
+souslieu, 01 lieu,   1N> [lieu] lieu: id_lieu
+concert: id_concert, nom, date, heure, salle_de_spectacle, XXX
+
+#############################################################################################
+
+
+
+À partir des phrases du sujet
+
+"Les concerts se déroulent dans différents lieux."
+==> se dérouler, 1N concert, 1N lieu
+1N concert, On se base sur des concerts qui vont avoir lieu, donc pas de 0 en card mini
+Si concert annulé, alors, on met info ailleurs
+1N lieu, card 1 mini car lieu utilisé au moins 1 fois (hyp avant annulation),
+car N maxi car un lieu accueil est utilisé pour plusieurs concerts 
+
+modif le 2020_10_10 PAR 
+"Les concerts se déroulent dans différents lieux."
+==> se dérouler, 1N concert, 1N lieu
+11 concert, On se base sur des concerts qui vont avoir lieu, donc pas de 0 en card mini
+Si concert annulé, alors, on met info ailleurs, card maxi 1 car un concert se déroule que 
+sur un seul lieu en même temps.
+1N lieu, card 1 mini car lieu utilisé au moins 1 fois (hyp avant annulation),
+car N maxi car un lieu accueil est utilisé pour plusieurs concerts 
+
+
+
+"Pour chaque salle, on connaît ... son régisseur en chef."
+régisseur en chef, 01 personne, 11 salle
+01 personne, card mini 0 car n'est pas forcément régisseur en chef
+car maxi 1, car si oui l'est une fois pour une salle donnée
+11 salle, car mini 1 car une salle doit avoir 1 régisseur en chef et un seul
+
+idem que ci-dessus
+"Pour chaque salle, on connaît ... son directeur"
+"Pour chaque salle, on connaît ... son chargé de communication"
+
+
+
+référencé, 11 salle, 1N lieu
+1 salle est reférencée que dans un seul lieu
+1 lieu à entre 1 et N salles
+
+
+
+Info complémentaire pour BDD à 1ère lecture
+"On possède sur chaque personne concernée une fiche avec son nom, prénom, téléphone, email."
+==> implique NOT NULL pour la table concernée
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Actualisation MOCODO schéma EA}
+Juste la fusion des infos des sections précèdentes.
+
+fusion des derniers plans en cours
+#######################MOCODO_MOCODO_MOCODO_MOCODO_MOCODO###################################
+
+affiche: id_affiche, img_XL_impression, img_com_web, colorimétrie, profondeur_couleur
+disque: id_disque, nom, prix_disque
+theme: id_theme, nom, XXX
+spécialité: id_spécialité, nom (ex: violon, harpe)
+principale, 11 interprète, 0N spécialité
+
+correspond, 11 concert, 1N affiche
+enregistrer, 01 concert, 11 disque
+thématique, 01 concert, 1N theme
+secondaire, 0N interprète, 0N spécialité
+interprète: id_interprète, nom, prénom, tel, email, naiss, nationalité, résumé_bio,
+
+bénéficier de, 01 concert, 11 entracte
+concert: id_concert, nom, date, heure, salle_de_spectacle, XXX
+programme, 1N morceau, 1N concert: ordre (position)
+morceau: id_morceau, auteur, titre, durée
+interpréteur principal, 1N morceau, 0N interprète
+
+entracte: id_entracte, nom, situe (=position en temps ou après X morceaux), XXX
+se dérouler, 1N concert, 1N lieu
+disposer, 01 concert, 1n bande_promo
+bande_promo: id_bande_promo, taille (en ko), format (ex: MIME), mots clés, durée
+personne: id_personne, nom, prénom, téléphone, email
+
+souslieu, 01 lieu,   1N> [lieu] lieu: id_lieu
+lieu: id_lieu, nom, adr, localité, dep, soustype (NULL),
+référencé, 11 salle, 1N lieu
+salle: nom(varchar(42)), adr, directeur (=id_personne), chargé de communication (=id_personne), régisseur en chef(=id_personne)
+travailleur, 0N personne, 1N salle
+
+#############################################################################################v
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{La tarification des concerts}
+
+
+"Le prix ne dépend pas de la salle, ni du concert, mais de la catégorie de la place."
+
+"Les places sont réparties en 3 catégories. On aura les places de catégorie 1 (excellente) à 50 €, de catégorie 2 (normale) à 30 €, et de catégorie 3 (visibilité réduite) à 15 €."
+
+catégorie
+id_catégorie, nom, prix
+1,excellente, 50
+2,normale, 30
+3,visibilité réduite, 15
+
+
+
+4@ appartenir, 11 place, 1N catégorie
+11 place, card mini 1, card maxi 1 car une place de plusieurs catégorie n'existe pas.
+1N catégorie, card mini 1 car, card maxi 1, 
+
+Q: y a-t-il des concerts avec un tarif unique (mais calqué sur les catégories existantes)?
+
+
+
+
+"Par exemple, le cirque d'hiver d'Amiens (code postal 80000) comporte 300 places de catégorie 1, aucune de catégorie 2 et 100 de catégorie 3."
+==> dit que comporter(ticket), 1N lieu, 1N place, 0N catégorie: nb_place, prix_final(selon cas)
+1N lieu, card mini 1 car lieu possède au moins une place, card maxi N car plusieurs places (siège ds la salle)
+1N place, card mini 1 car propose au moins une place, card maxi N car tous les sièges.
+0N catégorie, card mini 0 car ne propose toutes les catégories de places à  que tous les tarifs sont proposés, card maxi car
+
+==> finalement 
+==> comporter(ticket), 1N lieu, 1N place, 0N catégorie: prix_final(selon cas)
+2021_10_16 changement 
+
+
+"Le prix ne dépend pas de la salle, ni du concert, mais de la catégorie de la place. Les places sont réparties en 3 catégories. On aura les places de catégorie 1 (excellente) à 50 €, de catégorie 2 (normale) à 30 €, et de catégorie 3 (visibilité réduite) à 15 €. Par exemple, le cirque d'hiver d'Amiens (code postal 80000) comporte 300 places de catégorie 1, aucune de catégorie 2 et 100 de catégorie 3.
+Certaines villes ajoutent une taxe sur le tarif de base. Ainsi une place en catégorie 1 à Paris ne sera pas 50€ mais 60€. D’autres villes, au contraire, subventionnent les tarifs de base. Ainsi, une place en catégorie 2 à Dunkerque ne coutera pas 30€ mais 25€."
+==> faire requete SQL pour ajuster sselon les cas prix de la place, qui dépend de politique du LIEU
+
+
+
+dernier plan en cours
+#######################MOCODO_MOCODO_MOCODO_MOCODO_MOCODO###################################
+
+
+lieu: id_lieu, nom, adr, localité, dep, soustype (NULL),
+comporter(ticket), 1N lieu, 1N place, 0N catégorie: prix_final(selon cas)
+place: id_place, XXXstatut(vendu/réservé FNAC)
+
+:
+catégorie: id_catégorie, nom, prix_ref
+
+#############################################################################################
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Actualisation MOCODO schéma EA 2}
+Juste la fusion des infos des sections précèdentes.
+
+fusion des derniers plans en cours
+#######################MOCODO_MOCODO_MOCODO_MOCODO_MOCODO###################################
+
+affiche: id_affiche, img_XL_impression, img_com_web, colorimétrie, profondeur_couleur
+disque: id_disque, nom, prix_disque
+theme: id_theme, nom, XXX
+spécialité: id_spécialité, nom (ex: violon, harpe)
+principale, 11 interprète, 0N spécialité
+
+correspond, 11 concert, 1N affiche
+enregistrer, 01 concert, 11 disque
+thématique, 01 concert, 1N theme
+secondaire, 0N interprète, 0N spécialité
+interprète: id_interprète, nom, prénom, tel, email, naiss, nationalité, résumé_bio,
+
+bénéficier de, 01 concert, 11 entracte
+concert: id_concert, date, heure, salle_de_spectacle, XXX
+programme, 1N morceau, 1N concert: ordre (position)
+morceau: id_morceau, auteur, titre, durée
+interpréteur principal, 1N morceau, 0N interprète
+
+entracte: id_entracte, nom, situe (=position en temps ou après X morceaux), XXX
+se dérouler, 1N concert, 1N lieu
+disposer, 01 concert, 1n bande_promo
+bande_promo: id_bande_promo, taille (en ko), format (ex: MIME), mots clés, durée
+personne: id_personne, nom, prénom, téléphone, email
+
+souslieu, 01 lieu,   1N> [lieu] lieu: id_lieu
+lieu: id_lieu, nom, adr, localité, dep, soustype (NULL),
+référencé, 11 salle, 1N lieu
+salle: nom(varchar(42)), adr, directeur (=id_personne), chargé de communication (=id_personne), régisseur en chef(=id_personne)
+travailleur, 0N personne, 1N salle
+
+catégorie: id_catégorie, nom, prix_ref
+comporter(ticket), 1N lieu, 1N place, 0N catégorie: prix_final(selon cas)
+place: id_place, XXXstatut(vendu/réservé FNAC)
+
+#############################################################################################
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Note complémentaire pour le jeu d'essai}
+
+
+"La ville d'Amiens comporte 3 salles de spectacles pour ce festival."
+==> Il faut 3 entrées dans table lieu avec, localité = Amiens
+
+
+
+"Le département 80 comprend uniquement 2 villes participant au festival : Amiens et Abbeville."
+==> 
+SELECT DISTINCT lieu.localite
+FROM lieu
+WHERE lieu.localite = 80;
+
+doit donner 2 en réponse. Amiens et Abbeville
+
+
+2020_10_10 
+interpréter devient interpréteur principal
+
+# "Le concerto pour clarinette de Mozart est interprété plusieurs fois au même concert du 15 janvier au Zénith d'Amiens par des interprètes différents."
+==> plusieurs représentations 
+table concert(id_concert, nom, date, heure, salle_de_spectacle, XXX)
+INSERT INTO concert(id_concert, nom, date, heure, salle_de_spectacle) VALUES (1, 'Le concerto pour clarinette de Mozart', '15-01-2021', 'XXXX', 'Zénith d'Amiens');
+
+"est interprété plusieurs fois au même concert du 15 janvier"
+table morceau(id_morceau, auteur, titre, durée)
+INSERT INTO morceau(id_morceau, auteur, titre, durée) VALUES (1, 'Le concerto pour clarinette', 'Mozart', 'XXXX');
+
+table interprète(id_interprète, nom, prénom, tel, email, naiss, nationalité, résumé_bio)
+INSERT INTO interprète(id_interprète, nom) VALUES(1, 'XXX');
+INSERT INTO interprète(id_interprète, nom) VALUES(2, 'YYY');
+
+donc
+table interpréteur_principal(id_morceau, id_interprète)
+INSERT INTO interpréteur_principal(id_morceau, id_interprète) VALUES(1, 1);
+INSERT INTO interpréteur_principal(id_morceau, id_interprète) VALUES(1, 2);
+
+table programme(id_concert, id_morceau)
+INSERT INTO programme(id_concert, id_morceau) VALUES (1, 1, 1);
+INSERT INTO programme(id_concert, id_morceau) VALUES (1, 1, 2);
+
+requete SQL pour avoir la phrase #
+SELECT DISTINCT interpreteur_ppal.id_interprete, id_concert
+FROM interpreteur_ppal, programme, morceau, concert
+WHERE (auteur = 'Mozart' AND titre = 'Le concerto pour clarinette') 
+	AND (concert.date = '15-01-2021') AND concert.salle_de_spectacle = 'Zénith d'Amiens');
+
+
+idée jointure entre deux requetes
+--tous les morceaux joués le 15 janv au Zénith d'Amiens
+SELECT id_concert, id_morceau
+FROM concert, programme
+WHERE (concert.date = '15-01-2021') AND (salle_de_spectacle = '')
+AS ???
+
+
+--tous les concerts du 15 janv au Zénith d'Amiens
+SELECT id_concert
+FROM concert
+WHERE (concert.date = '15-01-2021') AND concert.salle_de_spectacle = 'Zénith d'Amiens')
+UNION
+SELECT id_concert
+FROM concert
+WHERE (concert.date = '15-01-2021') AND concert.salle_de_spectacle = 'Zénith d'Amiens')
+
+
+SELECT id_concert, id_morceau
+FROM programme, concert, morceau
+WHERE (concert.date = '15-01-2021' AND concert.salle_de_spectacle = 'Zénith d'Amiens')
+	AND (auteur = 'Mozart' AND titre = 'Le concerto pour clarinette')
+
+
+SELECT id_concert, id_morceau id_interprete
+FROM (SELECT id_concert, id_morceau
+		FROM programme, concert, morceau
+		
+     )
+WHERE
+
+select id_concert
+from concert
+where concert.titre = 'Le concerto pour clarinette' and XXXXXXa continuer
+
+
+
+- L'adagio d'Albinoni est interprété au concert du 16 janvier à 20H30 au palais de sports d'Amiens.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Site web}
+
+
+
+
+
+2021_10_19_1600
+
+Modif schema EA, enlève relation spe_ppal entre specialite et interprete
+concert5
+
+
+fusion des derniers plans en cours
+#######################MOCODO_MOCODO_MOCODO_MOCODO_MOCODO###################################
+
+affiche: id_affiche, img_XL_impression, img_com_web, colorimétrie, profondeur_couleur
+disque: id_disque, nom, prix_disque
+theme: id_theme, nom, XXX
+spécialité: id_spécialité, nom (ex: violon, harpe)
+
+correspond, 11 concert, 1N affiche
+enregistrer, 01 concert, 11 disque
+thématique, 01 concert, 1N theme
+secondaire, 0N interprète, 0N spécialité
+interprète: id_interprète, nom, prénom, tel, email, naiss, nationalité, résumé_bio, spe_ppal
+
+bénéficier de, 01 concert, 11 entracte
+concert: id_concert, date, heure, salle_de_spectacle, XXX
+programme, 1N morceau, 1N concert: ordre (position)
+morceau: id_morceau, auteur, titre, durée
+interpréteur principal, 1N morceau, 0N interprète
+
+entracte: id_entracte, nom, situe (=position en temps ou après X morceaux), XXX
+se dérouler, 1N concert, 1N lieu
+disposer, 01 concert, 1n bande_promo
+bande_promo: id_bande_promo, taille (en ko), format (ex: MIME), mots clés, durée
+personne: id_personne, nom, prénom, téléphone, email
+
+souslieu, 01 lieu,   1N> [lieu] lieu: id_lieu
+lieu: id_lieu, nom, adr, localité, dep, soustype (NULL),
+référencé, 11 salle, 1N lieu
+salle: nom(varchar(42)), adr, directeur (=id_personne), chargé de communication (=id_personne), régisseur en chef(=id_personne)
+travailleur, 0N personne, 1N salle
+
+catégorie: id_catégorie, nom, prix_ref
+comporter(ticket), 1N lieu, 1N place, 0N catégorie: prix_final(selon cas)
+place: id_place, XXXstatut(vendu/réservé FNAC)
+
+
+#############################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fusion des derniers plans en cours
+#######################MOCODO_MOCODO_MOCODO_MOCODO_MOCODO###################################
+
+affiche: id_affiche, img_imp, img_web, colori, prof_coul
+disque: id_disque, nom, prix_disque
+theme: id_theme, nom, XXX
+spécialité: id_spécialité, nom (ex: violon, harpe)
+
+correspond, 11 concert, 1N affiche
+enregistrer, 01 concert, 11 disque
+thématique, 01 concert, 1N theme
+secondaire, 0N interprète, 0N spécialité
+interprète: id_interprète, nom, prénom, tel, email, naiss, nat, resu_bio, spe_ppal
+
+bénéficier de, 01 concert, 11 entracte
+concert: id_concert, date, heure, salle_spect, XXX
+programme, 1N morceau, 1N concert: ordre (position)
+morceau: id_morceau, auteur, titre, durée
+interpréteur principal, 1N morceau, 0N interprète
+
+entracte: id_entracte, nom (à dez ???), situe (=position en temps ou après X morceaux), XXX
+se dérouler, 1N concert, 1N lieu
+disposer, 01 concert, 1n bande_promo
+bande_promo: id_bande_promo, taille (en ko), format (ex: MIME), mots clés, durée
+personne: id_personne, nom, prénom, tél, email
+
+souslieu, 01 lieu,   1N> [lieu] lieu: id_lieu
+lieu: id_lieu, nom, adr, localité, dep, soustype (NULL),
+référencé, 11 salle, 1N lieu
+salle: nom(varchar(42)), adr, directeur (=id_personne), charge_com (=id_personne), chef_regi(=id_personne)
+travailleur, 0N personne, 1N salle
+
+catégorie: id_catégorie, nom, prix_ref
+comporter(ticket), 1N lieu, 1N place, 0N catégorie: prix_final(selon cas)
+place: id_place, XXXstatut(vendu/réservé FNAC)
+
+
+#############################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+tables faciles à faire
+
+spécialité
+POUR MLD
+lien @ instruments musique classique
+https://fr.wikipedia.org/wiki/Musique_classique
+
+Cordes	= Alto · Archiluth · Clavecin · Clavicorde · Contrebasse · Épinette · Guitare classique · Harpe · Luth · Mandoline · Octobasse · Piano · Viole de gambe · Viole ténor · Violon · Violoncelle
+
+Bois =  Basson · Bon article Clarinette · Clarinette basse · Contrebasson · Cor anglais · Flûte traversière · Flûte à bec · Flûte en sol · Hautbois · Piccolo · Saxophone
+
+Cuivres	= Clairon · Cor · Cornet à pistons · Euphonium · Saxhorn · Saxtuba · Trombone · Trompette · Tuba · Tuba wagnérien
+
+Percussions	= Blocs chinois · Bongo · Caisse claire · Carillon · Carillon tubulaire · Célesta · Conga · Chimes · Cymbales · Cymbales antiques · Éoliphone · Enclumes · Fouet · Glockenspiel · Gong · Grelots · Grosse caisse · Marimba · Tambour à corde (Lion's Roar) · Tambourin · Timbales · Triangle · Xylophone
+
+
+
+specialite( idspe, nom (ex: violon, harpe)) ajouter numéro devant, taille max 19
+Alto
+Archiluth
+Basson
+Blocs chinois
+Bongo
+Caisse claire
+Carillon
+Carillon tubulaire
+Chimes
+Clairon
+Clarinette
+Clarinette basse
+Clavecin
+Clavicorde
+Conga
+Contrebasse
+Contrebasson
+Cor
+Cor anglais
+Cornet à pistons
+Cymbales
+Cymbales antiques
+Célesta
+Enclumes
+Euphonium
+Flûte en sol
+Flûte traversière
+Flûte à bec
+Fouet
+Glockenspiel
+Gong
+Grelots
+Grosse caisse
+Guitare classique
+Harpe
+Hautbois
+Luth
+Mandoline
+Marimba
+Octobasse
+Piano
+Piccolo
+Saxhorn
+Saxophone
+Saxtuba
+Tambour à corde
+Tambourin
+Timbales
+Triangle
+Trombone
+Trompette
+Tuba
+Tuba wagnérien
+Viole de gambe
+Viole ténor
+Violon
+Violoncelle
+Xylophone
+Éoliphone
+Épinette
+﻿
+
+
+
+
+
+
+
+catégorie
+categorie( idcat, nom, prixref)
+1,excellente,50
+2,normale,30
+3,visibilité réduite,15
+
+
+
+place (faire for 1 à 100 juste pour départ)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+info TD 2
+Bien regarder si on peut revenir à l'état précedent pour savoir si choix entre binaire et ternaire.
+
+
+exo
+cf photo, explication table DateAffectation est supprimée car info est dans Affectation.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Déf CLEAN A TRIER }
+\section{Déf CLEAN A TRIER }
+\section{Déf CLEAN A TRIER }
+\section{Déf CLEAN A TRIER }
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Propriétés des objets géométriques A PEAUFINER}
+
+
+
+% \\
+% \hspace*{2mm}
+% \hspace*{2mm}=\hspace*{2mm}
+% ${\dis{  }}$
+% Soit ${\dis{ f \in \mathscr{F} \left(X, \K \right) }}$
+% Soit ${\dis{  }}$
+% {\color{red} blabla}
+% {\color{orange} blabla}
+
+
+
+
+}
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{}
+\subsection{}
+\subsubsection{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{}
+\subsection{}
+\subsubsection{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{}
+\subsection{}
+\subsubsection{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{}
+%---------------------------------------------------------------
+\subsection{}
+
+
+\hspace*{2mm}
+\hspace*{2mm}=\hspace*{2mm}
+${\dis{  }}$
+Soit ${\dis{ f \in \mathscr{F} \left(X, \K \right) }}$
+Soit ${\dis{  }}$
+{\color{red} blabla}
+{\color{orange} blabla}
+
+Soit ${\dis{E}}$ un $\K$-espace vectoriel {\color{orange} Attention! pas forcément en dimension finie} de dimension finie non nulle.
+
+Soit ${\dis{n \in \N^{*} }}$ et soit Soit ${\dis{A \in \mathscr{M}_{n} \left( \K \right) }}$\\
+ un $\K$-espace vectoriel {\color{orange} Attention! pas forcément en dimension finie} de dimension finie non nulle.
+un $\K$-espace vectoriel {\color{orange} Attention! pas forcément en dimension finie} de dimension finie non nulle.
+Soit ${\dis{A \in \mathscr{M}_{n} \left( \K \right) }}$
+Soit $f$ un endomorphisme de $E$
+${\dis{}}$
+
+
