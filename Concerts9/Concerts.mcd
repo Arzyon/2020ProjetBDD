@@ -1,0 +1,32 @@
+affiche: id_affiche, img_imp, img_web, colori, prof_coul
+disque: id_disque, nom, prix_disque
+theme: id_theme, nom, XXX
+spécialité: id_spécialité, nom (ex: violon, harpe)
+
+correspond, 11 concert, 1N affiche
+enregistrer, 01 concert, 11 disque
+thématique, 01 concert, 1N theme
+secondaire, 0N interprète, 0N spécialité
+interprète: id_interprète, nom, prénom, tel, email, naiss, nat, resu_bio, spe_ppal
+
+bénéficier de, 01 concert, 11 entracte
+concert: id_concert, date, heure, salle_spect, XXX
+programme, 1N morceau, 1N concert: ordre (position)
+morceau: id_morceau, auteur, titre, durée
+interpréteur principal, 1N morceau, 0N interprète
+
+entracte: id_entracte, nom (à dez ???), situe (=position en temps ou après X morceaux), XXX
+se dérouler, 1N concert, 1N lieu
+disposer, 01 concert, 1n bande_promo
+bande_promo: id_bande_promo, taille (en ko), format (ex: MIME), mots clés, durée
+personne: id_personne, nom, prénom, tél, email
+
+souslieu, 01 lieu,   1N> [lieu] lieu: id_lieu
+lieu: id_lieu, nom, adr, localité, dep, soustype (NULL),
+référencé, 11 salle, 1N lieu
+salle: nom(varchar(42)), adr, directeur (=id_personne), charge_com (=id_personne), chef_regi(=id_personne)
+travailleur, 0N personne, 1N salle
+
+catégorie: id_catégorie, nom, prix_ref
+comporter(ticket), 1N lieu, 1N place, 0N catégorie: prix_final(selon cas)
+place: id_place, XXXstatut(vendu/réservé FNAC)

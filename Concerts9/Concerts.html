@@ -1,0 +1,181 @@
+<html>
+<head>
+<meta charset='utf-8'>
+<style>
+  #mld .relation { font-variant: small-caps; font-weight: bold }
+  #mld .primary { text-decoration: underline }
+  #mld .foreign { font-style: oblique }
+  #mld .normal { }
+</style>
+</head>
+<body>
+<div id='mld'>
+<div>
+  <span class='relation'>affiche</span> (
+    <span class='primary'>id_affiche</span>,
+    <span class='normal'>img_imp</span>,
+    <span class='normal'>img_web</span>,
+    <span class='normal'>colori</span>,
+    <span class='normal'>prof_coul</span>
+  )
+</div>
+<div>
+  <span class='relation'>disque</span> (
+    <span class='primary'>id_disque</span>,
+    <span class='normal'>nom</span>,
+    <span class='normal'>prix_disque</span>,
+    <span class='foreign'>id_concert</span>
+  )
+</div>
+<div>
+  <span class='relation'>theme</span> (
+    <span class='primary'>id_theme</span>,
+    <span class='normal'>nom</span>,
+    <span class='normal'>XXX</span>
+  )
+</div>
+<div>
+  <span class='relation'>spécialité</span> (
+    <span class='primary'>id_spécialité</span>,
+    <span class='normal'>nom (ex: violon</span>,
+    <span class='normal'>harpe)</span>
+  )
+</div>
+<div>
+  <span class='relation'>secondaire</span> (
+    <span class='foreign primary'>id_interprète</span>,
+    <span class='foreign primary'>id_spécialité</span>
+  )
+</div>
+<div>
+  <span class='relation'>interprète</span> (
+    <span class='primary'>id_interprète</span>,
+    <span class='normal'>nom</span>,
+    <span class='normal'>prénom</span>,
+    <span class='normal'>tel</span>,
+    <span class='normal'>email</span>,
+    <span class='normal'>naiss</span>,
+    <span class='normal'>nat</span>,
+    <span class='normal'>resu_bio</span>,
+    <span class='normal'>spe_ppal</span>
+  )
+</div>
+<div>
+  <span class='relation'>concert</span> (
+    <span class='primary'>id_concert</span>,
+    <span class='normal'>date</span>,
+    <span class='normal'>heure</span>,
+    <span class='normal'>salle_spect</span>,
+    <span class='normal'>XXX</span>,
+    <span class='foreign'>id_theme</span>,
+    <span class='foreign'>id_affiche</span>,
+    <span class='foreign'>id_bande_promo</span>
+  )
+</div>
+<div>
+  <span class='relation'>programme</span> (
+    <span class='foreign primary'>id_morceau</span>,
+    <span class='foreign primary'>id_concert</span>,
+    <span class='normal'>ordre (position)</span>
+  )
+</div>
+<div>
+  <span class='relation'>morceau</span> (
+    <span class='primary'>id_morceau</span>,
+    <span class='normal'>auteur</span>,
+    <span class='normal'>titre</span>,
+    <span class='normal'>durée</span>
+  )
+</div>
+<div>
+  <span class='relation'>interpréteur principal</span> (
+    <span class='foreign primary'>id_morceau</span>,
+    <span class='foreign primary'>id_interprète</span>
+  )
+</div>
+<div>
+  <span class='relation'>entracte</span> (
+    <span class='primary'>id_entracte</span>,
+    <span class='normal'>nom (à dez ???)</span>,
+    <span class='normal'>situe (=position en temps ou après X morceaux)</span>,
+    <span class='normal'>XXX</span>,
+    <span class='foreign'>id_concert</span>
+  )
+</div>
+<div>
+  <span class='relation'>se dérouler</span> (
+    <span class='foreign primary'>id_concert</span>,
+    <span class='foreign primary'>id_lieu</span>
+  )
+</div>
+<div>
+  <span class='relation'>bande_promo</span> (
+    <span class='primary'>id_bande_promo</span>,
+    <span class='normal'>taille (en ko)</span>,
+    <span class='normal'>format (ex: MIME)</span>,
+    <span class='normal'>mots clés</span>,
+    <span class='normal'>durée</span>
+  )
+</div>
+<div>
+  <span class='relation'>personne</span> (
+    <span class='primary'>id_personne</span>,
+    <span class='normal'>nom</span>,
+    <span class='normal'>prénom</span>,
+    <span class='normal'>tél</span>,
+    <span class='normal'>email</span>
+  )
+</div>
+<div>
+  <span class='relation'>lieu</span> (
+    <span class='primary'>id_lieu</span>,
+    <span class='normal'>nom</span>,
+    <span class='normal'>adr</span>,
+    <span class='normal'>localité</span>,
+    <span class='normal'>dep</span>,
+    <span class='normal'>soustype (NULL)</span>,
+    <span class='normal'></span>,
+    <span class='foreign'>id_lieu lieu</span>,
+    <span class='normal'>id_lieu.1</span>
+  )
+</div>
+<div>
+  <span class='relation'>salle</span> (
+    <span class='primary'>nom(varchar(42))</span>,
+    <span class='normal'>adr</span>,
+    <span class='normal'>directeur (=id_personne)</span>,
+    <span class='normal'>charge_com (=id_personne)</span>,
+    <span class='normal'>chef_regi(=id_personne)</span>,
+    <span class='foreign'>id_lieu</span>
+  )
+</div>
+<div>
+  <span class='relation'>travailleur</span> (
+    <span class='foreign primary'>id_personne</span>,
+    <span class='foreign primary'>nom(varchar(42))</span>
+  )
+</div>
+<div>
+  <span class='relation'>catégorie</span> (
+    <span class='primary'>id_catégorie</span>,
+    <span class='normal'>nom</span>,
+    <span class='normal'>prix_ref</span>
+  )
+</div>
+<div>
+  <span class='relation'>comporter(ticket)</span> (
+    <span class='foreign primary'>id_lieu</span>,
+    <span class='foreign primary'>id_place</span>,
+    <span class='foreign primary'>id_catégorie</span>,
+    <span class='normal'>prix_final(selon cas)</span>
+  )
+</div>
+<div>
+  <span class='relation'>place</span> (
+    <span class='primary'>id_place</span>,
+    <span class='normal'>XXXstatut(vendu/réservé FNAC)</span>
+  )
+</div>
+</div>
+</body>
+</html>

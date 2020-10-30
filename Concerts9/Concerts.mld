@@ -1,0 +1,57 @@
+%%mocodo
+:
+affiche: id_affiche, img_imp, img_web, colori, prof_coul
+:
+disque: id_disque, nom, prix_disque, #id_concert->concert->id_concert
+:
+theme: id_theme, nom, XXX
+:
+spécialité: id_spécialité, nom (ex: violon, harpe)
+:::
+
+
+:::::::
+secondaire: #id_interprète->interprète->id_interprète, _#id_spécialité->spécialité->id_spécialité
+:
+interprète: id_interprète, nom, prénom, tel, email, naiss, nat, resu_bio, spe_ppal
+:
+
+
+:::
+concert: id_concert, date, heure, salle_spect, XXX, #id_theme->theme->id_theme, #id_affiche->affiche->id_affiche, #id_bande_promo->bande_promo->id_bande_promo
+:
+programme: #id_morceau->morceau->id_morceau, _#id_concert->concert->id_concert, ordre (position)
+:
+morceau: id_morceau, auteur, titre, durée
+:
+interpréteur principal: #id_morceau->morceau->id_morceau, _#id_interprète->interprète->id_interprète
+:
+
+
+:
+entracte: id_entracte, nom (à dez ???), situe (=position en temps ou après X morceaux), XXX, #id_concert->concert->id_concert
+:
+se dérouler: #id_concert->concert->id_concert, _#id_lieu->lieu->id_lieu
+:::
+bande_promo: id_bande_promo, taille (en ko), format (ex: MIME), mots clés, durée
+:
+personne: id_personne, nom, prénom, tél, email
+:
+
+
+:::
+lieu: id_lieu, nom, adr, localité, dep, soustype (NULL), , #id_lieu lieu->lieu->id_lieu, id_lieu.1
+:::
+salle: nom(varchar(42)), adr, directeur (=id_personne), charge_com (=id_personne), chef_regi(=id_personne), #id_lieu->lieu->id_lieu
+:
+travailleur: #id_personne->personne->id_personne, _#nom(varchar(42))->salle->nom(varchar(42))
+:
+
+
+:::
+catégorie: id_catégorie, nom, prix_ref
+:
+comporter(ticket): #id_lieu->lieu->id_lieu, _#id_place->place->id_place, _#id_catégorie->catégorie->id_catégorie, prix_final(selon cas)
+:
+place: id_place, XXXstatut(vendu/réservé FNAC)
+:::
